@@ -1,0 +1,27 @@
+1. install pipenv
+    pip3 install pipenv
+2. use python 3 for pipenv
+    pipenv --three
+3. install flask
+    pipenv install flask
+4. install translate
+    pipenv install translate
+5. cd to the folder that contains bootstrap.sh and run the bootstrap
+    ./bootstrap.sh
+6. use a NEW terminal to fetch the translated data
+    a. translate ch to en
+        Curl command:
+        curl -X GET -H "Content-Type: application/json" -d '{
+          "word": "愤怒"
+        }' http://localhost:5000/convert_ch_to_en
+
+        You will get:
+        "Rage"
+    b. translate en to ch
+        Curl command:
+        curl -X GET -H "Content-Type: application/json" -d '{
+          "word": "happy"
+        }' http://localhost:5000/convert_en_to_ch
+
+        You will get:
+        "\u5e78\u798f\u7684"
