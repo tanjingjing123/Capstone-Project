@@ -11,17 +11,13 @@
 6. use a NEW terminal to fetch the translated data
     a. translate ch to en
         Curl command:
-        curl -X GET -H "Content-Type: application/json" -d '{
-          "word": "愤怒"
-        }' http://localhost:5000/convert_ch_to_en
+        curl -X GET -H http://localhost:5000/convert_ch_to_en?word=愤怒
 
         You will get:
         "Rage"
     b. translate en to ch
         Curl command:
-        curl -X GET -H "Content-Type: application/json" -d '{
-          "word": "happy"
-        }' http://localhost:5000/convert_en_to_ch
+        curl -X GET -H http://localhost:5000/convert_en_to_ch?word=happy
 
         You will get:
         "\u5e78\u798f\u7684"
