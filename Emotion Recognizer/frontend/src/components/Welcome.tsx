@@ -7,16 +7,13 @@ import emotion from "./../assets/emotion.gif";
 import React from "react";
 import axios from "axios";
 import FormData from "form-data";
-import fs from 'fs';
-//import mp3File from '/Users/hemanthharshinee/Documents/GitHub/Capstone-Project/Emotion Recognizer/frontend/src/assets/output/speechifyoutput.mp3';
 
 //import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-import mySound from "./../assets/speechifyoutput.mp3";//"src/assets/speechifyoutput.mp3";
-//import { text } from "stream/consumers";
+
 type IWelcomeProps = {};
 
 export const Welcome: React.FC<IWelcomeProps> = () => {
@@ -27,13 +24,11 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
   const [openModalForSpeech, toggleModalForSpeech] =
     React.useState<boolean>(false);
   const [output, setOutput] = React.useState<string>("");
-  const [audioFileLocation, setAudioFileLocation] = React.useState<string>("");
-  const [speechtext, setSpeechText] = React.useState<boolean>(false);
-  // const [language, setLanguage] = React.useState<string>("");
+  const [speechText, setSpeechText] = React.useState<boolean>(false);
   const [fileChosen, setFileChosen] = React.useState<any>();
   const [textFileChosen, setTextFileChosen] = React.useState<any>();
-  const [convertedSpeech, setConvertedSpeech] = React.useState<any>()
-  const [convertedtext, setConvertedText] = React.useState<any>()
+  const [convertedSpeech, setConvertedSpeech] = React.useState<any>();
+  const [src, setSrc] = React.useState("");
   const handleModal = () => {
     toggleModal(!openModal);
   };
@@ -66,64 +61,54 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
           language: "chinese", // TODO: need to support for english and chinese languages
         },
       })
-      .then((data) => { 
+      .then((data) => {
         setOutput(data.data);
       });
   };
 
-  const changeFile = (e:any) => {
-    const files= e.target.files;
-    var filesArr = Array.prototype.slice.call(files);  
-    setFileChosen(filesArr)
-    
+  const changeFile = (e: any) => {
+    const files = e.target.files;
+    var filesArr = Array.prototype.slice.call(files);
+    setFileChosen(filesArr);
+  };
+
+  const changeText = (e: any) => {
+    const files = e.target.files;
+    var filesArr = Array.prototype.slice.call(files);
+    console.log(filesArr);
+    setTextFileChosen(filesArr);
+  };
+
+  function handleClick() {
+    let formData = new FormData();
+    formData.append("inputFile", textFileChosen[0], textFileChosen[0].name);
+    axios({
+      url: "http://localhost:8020/Text_to_speech",
+      method: "post",
+      responseType: "blob",
+      headers: { Accept: "*/*", "Content-Type": "multipart/form-data" },
+      data: formData,
+    })
+      .then((res) => {
+        setSrc(URL.createObjectURL(res.data));
+      })
+      .catch((error) => {
+        console.log("axios error:", error);
+      });
   }
 
-  const changeText = (e:any)=>{
-    const files= e.target.files;
-    var filesArr = Array.prototype.slice.call(files);  
-    setTextFileChosen(filesArr)
-    
-  }
-
-  React.useEffect(()=>{
-    if(textFileChosen?.length>0){
-      let formData = new FormData(); 
-      //var formdata = new FormData();
-//formdata.append("inputFile", fileInput.files[0], "sample.txt"); 
-      formData.append("inputFile", textFileChosen[0], textFileChosen[0].name);
-      console.log("check",formData, textFileChosen)
-      axios({
-            method: "post",
-            url: "http://localhost:8020/Text_to_speech",
-            headers: {  Accept: '*/*', "Content-Type": "multipart/form-data"},
-            data: formData,
-          }).then(data=>{console.log("datahere",data);
-          setConvertedText(data.data)})
-          
-    }
-  },[textFileChosen])
-
-
-React.useEffect(()=>{
-  console.log("text file here",convertedtext)
-  // write to file mp3File 
-   
-},[convertedtext]);
-
-  React.useEffect(()=>{
-    if(fileChosen?.length>0){
-      let formData = new FormData();  
+  React.useEffect(() => {
+    if (fileChosen?.length > 0) {
+      let formData = new FormData();
       formData.append("inputFile", fileChosen[0], fileChosen[0].name);
       axios({
-            method: "post",
-            url: "http://localhost:8020/Speech_to_text",
-            headers: {  Accept: '*/*', "Content-Type": "multipart/form-data"},
-            data: formData,
-          }).then(data=>setConvertedSpeech(data.data))
-          
+        method: "post",
+        url: "http://localhost:8020/Speech_to_text",
+        headers: { Accept: "*/*", "Content-Type": "multipart/form-data" },
+        data: formData,
+      }).then((data) => setConvertedSpeech(data.data));
     }
-  },[fileChosen])
-
+  }, [fileChosen]);
 
   return (
     <>
@@ -151,21 +136,26 @@ React.useEffect(()=>{
                           component="h2"
                         >
                           <h1>Speech to Text</h1>
-                  
                         </Typography>
                         <div id="speechContainer">
                           {/* <h3>Upload new File</h3> */}
-                          <input type="file" name="file" onChange={changeFile}/>
-                          
+                          <input
+                            type="file"
+                            name="file"
+                            onChange={changeFile}
+                          />
+
                           <br />
                           <input
                             type="submit"
                             id="submitButton"
                             value="Transcribe"
-                            onClick={()=>setSpeechText(true)}
+                            onClick={() => setSpeechText(true)}
                           />
                         </div>
-                        {speechtext && convertedSpeech?.length>0 && <div>{convertedSpeech}</div>}
+                        {speechText && convertedSpeech?.length > 0 && (
+                          <div>{convertedSpeech}</div>
+                        )}
                       </Box>
                     </Modal>
                   </div>
@@ -178,7 +168,6 @@ React.useEffect(()=>{
                   <img src={texttospeech} alt="speech" />
                 </div>
                 <div className="contentBx">
-                  
                   <div>
                     <h2 onClick={handleModalForSpeech}>Speechify</h2>
                     <Modal
@@ -194,30 +183,29 @@ React.useEffect(()=>{
                           component="h2"
                         >
                           <h1>Text to Speech</h1>
-                         
                         </Typography>
                         <div id="speechContainer">
-                          {/* <h3>Upload new File</h3> */}
-                          <input type="file" name="file" onChange={changeText}/>
-                          {convertedtext && <audio controls={true}> <source src={mySound} type="audio/mpeg"></source></audio>}
+                          <input
+                            type="file"
+                            name="file"
+                            onChange={changeText}
+                          />
+                          {textFileChosen && textFileChosen?.length > 0 && (
+                            <button onClick={handleClick}>Play</button>
+                          )}
+                          <div>
+                            {textFileChosen && textFileChosen?.length > 0 && (
+                              <audio id="audio" controls src={src} autoPlay />
+                            )}
+                          </div>
                           <br />
-                          {/* <input
-                            type="submit"
-                            id="submitButton"
-                            value="Transcribe"
-                            onClick={() =>
-                              getTranscribe(
-                                "/Users/hemanthharshinee/Desktop/oh-yeah-everything-is-fine.wav"
-                              )
-                            }
-                          /> */}
                         </div>
                       </Box>
                     </Modal>
                   </div>
-                  </div>
                 </div>
               </div>
+            </div>
             <div className="card">
               <div className="box">
                 <div className="imgBx">

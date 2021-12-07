@@ -1,7 +1,7 @@
 import flask
 from flask import Flask, request, Response, send_file
 from translate import Translator
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import SpeechToTextService as stts
 import TextToSpeechService as ttss
 
@@ -37,6 +37,7 @@ def translate_speech_to_text():
 
 # API to translate Text to Speech
 @app.route("/Text_to_speech", methods=['GET', 'POST'])
+@cross_origin()
 def translate_text_to_speech():
     file = request.files["inputFile"]
     print(file)
@@ -45,5 +46,5 @@ def translate_text_to_speech():
     return \
         flask.send_file('/Users/hemanthharshinee/Documents/GitHub/'
                         'Capstone-Project/Emotion Recognizer/backend/output.mp3',
-                               as_attachment=True)
+                               as_attachment=True, mimetype="audio/mp3")
 

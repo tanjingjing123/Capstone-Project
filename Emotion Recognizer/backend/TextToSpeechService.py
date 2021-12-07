@@ -1,14 +1,10 @@
 from google.cloud import texttospeech
 import os
 
-
 def text_to_speech_service(path):
     """Synthesizes speech from the input file of text."""
     os.environ['GOOGLE_APPLICATION_CREDENTIALS']  ="/Users/hemanthharshinee/Downloads/text-to-speech.json"
     client = texttospeech.TextToSpeechClient()
-
-    # Full path of the audio file, Replace with your file name
-    # text_file = os.path.join(os.path.dirname(__file__),path)
 
     with open(path, "r") as f:
         text = f.read()
@@ -22,4 +18,4 @@ def text_to_speech_service(path):
 
     with open("output.mp3", "wb") as out:
         out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+        print('Audio content written to file "output.mp3')
