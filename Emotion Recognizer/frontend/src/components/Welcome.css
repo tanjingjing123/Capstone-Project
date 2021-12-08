@@ -51,7 +51,7 @@ body{
   }
 
 .maincard{
-    margin-top:5%;
+   
     display: flex;
     justify-content: space-around;  
     align-items: center;
@@ -99,8 +99,7 @@ section{
     align-items: center;
     flex-wrap: wrap;
     transform-style: preserve-3d;
-    width:2050px;
-    box-shadow:0px 10px 30px rgba(0,0,0,0.3);
+    width:1200px;
     border-radius: 20px;
 
 }
@@ -112,8 +111,8 @@ section{
 
 section .card{
 position: relative;
-width:500px;
-height:500px;
+width:300px;
+height:300px;
 margin: 20px;
 transform-style: preserve-3d;
 perspective: 1000px;
@@ -224,9 +223,50 @@ section .card .box .contentBx div h2{
     cursor:pointer;
 }
 
+.inputClass {
+    position: fixed;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, 0);
+}
+
+.transcribe {
+    position: fixed;
+    top: 150%;
+    border: 1px solid #000;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    width: 115%;
+    background-color: #00A800
+}
+input[type="file"] {
+    display: none;
+}
+
+input[type="submit"] {
+    display: none;
+}
+
+.closeButton {
+    position: fixed;
+    left: 90%;
+    background-color: #000;
+    color: red;
+    top: -2%
+}
+.custom-file-upload {
+    border: 1px solid #000;
+    display: inline-block;
+    padding: 6px 12px;
+    width:100%;
+    cursor: pointer;
+    background-color: #24a0ed;
+}
+
 .speechClass{
 
-width: 100000;
+    /* width: 100000;
   height: 1000;
   position: absolute;
   top: 50%;
@@ -235,5 +275,18 @@ width: 100000;
   
   border: 2px solid #000;
   box-shadow: 24;
+  background-color: azure; */
+
+  position: absolute;
+  width: 30%;
+  height: 40%;
+  border: 2px solid #000;
+  box-shadow: 24;
   background-color: azure;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+
+  transform: translate(-50%, -50%);
 }

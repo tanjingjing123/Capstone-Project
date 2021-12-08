@@ -13,7 +13,14 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-
+import Zoom  from '@mui/material/Zoom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import GTranslateIcon from '@mui/icons-material/GTranslate';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from "@material-ui/core";
+import LoopIcon from '@mui/icons-material/Loop';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import Paper from "@material-ui/core/Paper";
 type IWelcomeProps = {};
 
 export const Welcome: React.FC<IWelcomeProps> = () => {
@@ -32,7 +39,7 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
   const handleModal = () => {
     toggleModal(!openModal);
   };
-
+  const [loader, setLoader] = React.useState<boolean>(false);
   const handleModalForVoiceNote = () => {
     toggleModalForVoiceNote(!openModalForVoiceNote);
   };
@@ -97,6 +104,12 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
       });
   }
 
+  React.useEffect(()=>{
+    if(textFileChosen?.length>0){
+      handleClick()
+    }
+  },[textFileChosen])
+
   React.useEffect(() => {
     if (fileChosen?.length > 0) {
       let formData = new FormData();
@@ -113,6 +126,7 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
   return (
     <>
       <div className="gallery__body">
+        <h1 style={{textAlign:"center", fontSize:"50px", color:"#4169e1"}}>Emotion Recognizer</h1>
         <div className="maincard">
           <section>
             <div className="card">
@@ -122,40 +136,72 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 </div>
                 <div className="contentBx">
                   <div>
-                    <h2 onClick={handleModalForVoiceNote}>Voice Notepad</h2>
+                    <h2 onClick={handleModalForVoiceNote} style={{cursor:"pointer"}}>Textify</h2>
                     <Modal
                       open={openModalForVoiceNote}
                       onClose={handleCloseForVoiceNote}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
+                      
                       <Box className="speechClass">
+                        
+                      {/* <IconButton aria-label="Close" className="closeButton" onClick={handleCloseForVoiceNote}>
+                      
+          <CloseIcon />
+          
+        </IconButton> */}
+        
+        
                         <Typography
                           id="modal-modal-title"
                           variant="h6"
                           component="h2"
                         >
-                          <h1>Speech to Text</h1>
+                          <h3 style={{textAlign:"center", color:"#4169e1", paddingTop:"10px"}} >Speech to Text</h3>
+                          
+                          <hr style={{width:"50%",marginLeft:"25%",marginRight:"25%"}}/>
                         </Typography>
-                        <div id="speechContainer">
+                        <div className="inputClass">
                           {/* <h3>Upload new File</h3> */}
+                          <div style={{display:"flex", justifyContent: "space-around",  width:"115%"}}>
+                          <label htmlFor="file-upload" className="custom-file-upload">
+    <i ><CloudUploadIcon/></i> <span style={{color:"white", textAlign:"center", fontWeight:"bold", paddingLeft:"5px"}}>Upload sound files</span>
+</label>
+            
                           <input
+                          id="file-upload"
                             type="file"
                             name="file"
                             onChange={changeFile}
+                            
                           />
+                  <span style={{paddingLeft:"5px", paddingTop:"2%"}}>{fileChosen?.length>0 && <DoneOutlineIcon/>}</span>
+                  </div>
+        <div>
+                          <label htmlFor="transcribeInput" className="transcribe">
+    <i ><GTranslateIcon/></i> <span style={{color:"white", textAlign:"center", paddingLeft:"25px", fontWeight:"bold", paddingTop:"2%", paddingBottom:"2%", lineHeight:"20px"}}>Transcribe</span>
+</label>
 
-                          <br />
+
                           <input
+                            className="transcribe"
                             type="submit"
-                            id="submitButton"
+                            id="transcribeInput"
                             value="Transcribe"
                             onClick={() => setSpeechText(true)}
+                            
                           />
+                         
+                        
                         </div>
                         {speechText && convertedSpeech?.length > 0 && (
-                          <div>{convertedSpeech}</div>
+                          
+                          <div style={{top:"300%", position:"absolute"}}>{convertedSpeech}</div>
+                          
                         )}
+                        </div>
+                        
                       </Box>
                     </Modal>
                   </div>
@@ -185,17 +231,18 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                           <h1>Text to Speech</h1>
                         </Typography>
                         <div id="speechContainer">
+                        <label htmlFor="text-upload" className="custom-file-upload">
+    <i ><CloudUploadIcon/></i> <span style={{color:"white", textAlign:"center", fontWeight:"bold", paddingLeft:"5px"}}>Upload Text files</span>
+</label>
                           <input
+                          id="text-upload"
                             type="file"
                             name="file"
                             onChange={changeText}
                           />
-                          {textFileChosen && textFileChosen?.length > 0 && (
-                            <button onClick={handleClick}>Play</button>
-                          )}
                           <div>
                             {textFileChosen && textFileChosen?.length > 0 && (
-                              <audio id="audio" controls src={src} autoPlay />
+                              <audio id="audio" controls src={src} />
                             )}
                           </div>
                           <br />
@@ -214,7 +261,7 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 <div className="contentBx">
                   <div>
                     <h2 onClick={handleModal} className="hoverClass">
-                      Convert Me
+                      Translate
                     </h2>
                     {/* Popup */}
                     <Modal

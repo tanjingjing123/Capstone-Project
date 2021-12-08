@@ -5,7 +5,7 @@ import {Welcome} from "./components/Welcome.tsx";
 function App() {
   return (
     <div>
-      <Header/>
+      
       
       <Welcome/>
     </div>
