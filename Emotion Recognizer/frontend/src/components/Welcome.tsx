@@ -13,13 +13,13 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-import Zoom  from '@mui/material/Zoom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import GTranslateIcon from '@mui/icons-material/GTranslate';
-import CloseIcon from '@mui/icons-material/Close';
+import Zoom from "@mui/material/Zoom";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import GTranslateIcon from "@mui/icons-material/GTranslate";
+import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@material-ui/core";
-import LoopIcon from '@mui/icons-material/Loop';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import LoopIcon from "@mui/icons-material/Loop";
+import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import Paper from "@material-ui/core/Paper";
 type IWelcomeProps = {};
 
@@ -30,6 +30,9 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
     React.useState<boolean>(false);
   const [openModalForSpeech, toggleModalForSpeech] =
     React.useState<boolean>(false);
+    const [openModalForEmotion, toggleModalForEmotion] =
+    React.useState<boolean>(false);
+  
   const [output, setOutput] = React.useState<string>("");
   const [speechText, setSpeechText] = React.useState<boolean>(false);
   const [fileChosen, setFileChosen] = React.useState<any>();
@@ -60,12 +63,16 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
     toggleModalForSpeech(false);
   };
 
+  const handleCloseForEmotion = () => {
+    toggleModalForEmotion(false);
+  };
+
   const setTranslatedText = () => {
     axios
       .get("http://localhost:8020/translate_text", {
         params: {
           word: speechInput,
-          language: "chinese", // TODO: need to support for english and chinese languages
+          language: "chinese",
         },
       })
       .then((data) => {
@@ -104,11 +111,11 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
       });
   }
 
-  React.useEffect(()=>{
-    if(textFileChosen?.length>0){
-      handleClick()
+  React.useEffect(() => {
+    if (textFileChosen?.length > 0) {
+      handleClick();
     }
-  },[textFileChosen])
+  }, [textFileChosen]);
 
   React.useEffect(() => {
     if (fileChosen?.length > 0) {
@@ -126,7 +133,9 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
   return (
     <>
       <div className="gallery__body">
-        <h1 style={{textAlign:"center", fontSize:"50px", color:"#4169e1"}}>Emotion Recognizer</h1>
+        <h1 style={{ textAlign: "center", fontSize: "50px", color: "#4169e1" }}>
+          Emotion Recognizer
+        </h1>
         <div className="maincard">
           <section>
             <div className="card">
@@ -136,72 +145,119 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 </div>
                 <div className="contentBx">
                   <div>
-                    <h2 onClick={handleModalForVoiceNote} style={{cursor:"pointer"}}>Textify</h2>
+                    <h2
+                      onClick={handleModalForVoiceNote}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Textify
+                    </h2>
                     <Modal
                       open={openModalForVoiceNote}
                       onClose={handleCloseForVoiceNote}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
-                      
                       <Box className="speechClass">
-                        
-                      {/* <IconButton aria-label="Close" className="closeButton" onClick={handleCloseForVoiceNote}>
-                      
-          <CloseIcon />
-          
-        </IconButton> */}
-        
-        
                         <Typography
                           id="modal-modal-title"
                           variant="h6"
                           component="h2"
                         >
-                          <h3 style={{textAlign:"center", color:"#4169e1", paddingTop:"10px"}} >Speech to Text</h3>
-                          
-                          <hr style={{width:"50%",marginLeft:"25%",marginRight:"25%"}}/>
+                          <h3
+                            style={{
+                              textAlign: "center",
+                              color: "#4169e1",
+                              paddingTop: "10px",
+                            }}
+                          >
+                            Speech to Text
+                          </h3>
+
+                          <hr
+                            style={{
+                              width: "50%",
+                              marginLeft: "25%",
+                              marginRight: "25%",
+                            }}
+                          />
                         </Typography>
                         <div className="inputClass">
                           {/* <h3>Upload new File</h3> */}
-                          <div style={{display:"flex", justifyContent: "space-around",  width:"115%"}}>
-                          <label htmlFor="file-upload" className="custom-file-upload">
-    <i ><CloudUploadIcon/></i> <span style={{color:"white", textAlign:"center", fontWeight:"bold", paddingLeft:"5px"}}>Upload sound files</span>
-</label>
-            
-                          <input
-                          id="file-upload"
-                            type="file"
-                            name="file"
-                            onChange={changeFile}
-                            
-                          />
-                  <span style={{paddingLeft:"5px", paddingTop:"2%"}}>{fileChosen?.length>0 && <DoneOutlineIcon/>}</span>
-                  </div>
-        <div>
-                          <label htmlFor="transcribeInput" className="transcribe">
-    <i ><GTranslateIcon/></i> <span style={{color:"white", textAlign:"center", paddingLeft:"25px", fontWeight:"bold", paddingTop:"2%", paddingBottom:"2%", lineHeight:"20px"}}>Transcribe</span>
-</label>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-around",
+                              width: "115%",
+                            }}
+                          >
+                            <label
+                              htmlFor="file-upload"
+                              className="custom-file-upload"
+                            >
+                              <i>
+                                <CloudUploadIcon />
+                              </i>{" "}
+                              <span
+                                style={{
+                                  color: "white",
+                                  textAlign: "center",
+                                  fontWeight: "bold",
+                                  paddingLeft: "5px",
+                                }}
+                              >
+                                Upload sound files
+                              </span>
+                            </label>
 
+                            <input
+                              id="file-upload"
+                              type="file"
+                              name="file"
+                              onChange={changeFile}
+                            />
+                            <span
+                              style={{ paddingLeft: "5px", paddingTop: "2%" }}
+                            >
+                              {fileChosen?.length > 0 && <DoneOutlineIcon />}
+                            </span>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="transcribeInput"
+                              className="transcribe"
+                            >
+                              <i>
+                                <GTranslateIcon />
+                              </i>{" "}
+                              <span
+                                style={{
+                                  color: "white",
+                                  textAlign: "center",
+                                  paddingLeft: "25px",
+                                  fontWeight: "bold",
+                                  paddingTop: "2%",
+                                  paddingBottom: "2%",
+                                  lineHeight: "20px",
+                                }}
+                              >
+                                Transcribe
+                              </span>
+                            </label>
 
-                          <input
-                            className="transcribe"
-                            type="submit"
-                            id="transcribeInput"
-                            value="Transcribe"
-                            onClick={() => setSpeechText(true)}
-                            
-                          />
-                         
-                        
+                            <input
+                              className="transcribe"
+                              type="submit"
+                              id="transcribeInput"
+                              value="Transcribe"
+                              onClick={() => setSpeechText(true)}
+                            />
+                          </div>
+                          {speechText && convertedSpeech?.length > 0 && (
+                            <div style={{ top: "300%", position: "absolute" }}>
+                              {convertedSpeech}
+                            </div>
+                          )}
                         </div>
-                        {speechText && convertedSpeech?.length > 0 && (
-                          
-                          <div style={{top:"300%", position:"absolute"}}>{convertedSpeech}</div>
-                          
-                        )}
-                        </div>
-                        
                       </Box>
                     </Modal>
                   </div>
@@ -215,7 +271,12 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 </div>
                 <div className="contentBx">
                   <div>
-                    <h2 onClick={handleModalForSpeech}>Speechify</h2>
+                    <h2
+                      onClick={handleModalForSpeech}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Speechify
+                    </h2>
                     <Modal
                       open={openModalForSpeech}
                       onClose={handleCloseForSpeech}
@@ -228,22 +289,76 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                           variant="h6"
                           component="h2"
                         >
-                          <h1>Text to Speech</h1>
-                        </Typography>
-                        <div id="speechContainer">
-                        <label htmlFor="text-upload" className="custom-file-upload">
-    <i ><CloudUploadIcon/></i> <span style={{color:"white", textAlign:"center", fontWeight:"bold", paddingLeft:"5px"}}>Upload Text files</span>
-</label>
-                          <input
-                          id="text-upload"
-                            type="file"
-                            name="file"
-                            onChange={changeText}
+                          <h3
+                            style={{
+                              textAlign: "center",
+                              color: "#4169e1",
+                              paddingTop: "10px",
+                            }}
+                          >
+                            Text to Speech
+                          </h3>
+                          <hr
+                            style={{
+                              width: "50%",
+                              marginLeft: "25%",
+                              marginRight: "25%",
+                            }}
                           />
+                        </Typography>
+                        <div className="inputClass">
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-around",
+                              width: "115%",
+                            }}
+                          >
+                            <label
+                              htmlFor="text-upload"
+                              className="custom-file-upload"
+                            >
+                              <i>
+                                <CloudUploadIcon />
+                              </i>{" "}
+                              <span
+                                style={{
+                                  color: "white",
+                                  textAlign: "center",
+                                  fontWeight: "bold",
+                                  paddingLeft: "5px",
+                                }}
+                              >
+                                Upload Text files
+                              </span>
+                            </label>
+
+                            <input
+                              id="text-upload"
+                              type="file"
+                              name="file"
+                              onChange={changeText}
+                            />
+                            <span
+                              style={{ paddingLeft: "5px", paddingTop: "2%" }}
+                            >
+                              {fileChosen?.length > 0 && <DoneOutlineIcon />}
+                            </span>
+                          </div>
                           <div>
-                            {textFileChosen && textFileChosen?.length > 0 && (
-                              <audio id="audio" controls src={src} />
-                            )}
+                            <input
+                              className="transcribe"
+                              type="submit"
+                              id="transcribeInput"
+                              value="Transcribe"
+                              onClick={() => setTextFileChosen(true)}
+                            />
+
+                            <div>
+                              {textFileChosen && textFileChosen?.length > 0 && (
+                                <audio id="audio" controls src={src} />
+                              )}
+                            </div>
                           </div>
                           <br />
                         </div>
@@ -276,7 +391,22 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                           variant="h6"
                           component="h2"
                         >
-                          Enter a text to translate
+                          <h3
+                            style={{
+                              textAlign: "center",
+                              color: "#4169e1",
+                              paddingTop: "10px",
+                            }}
+                          >
+                            Translator
+                          </h3>
+                          <hr
+                            style={{
+                              width: "50%",
+                              marginLeft: "25%",
+                              marginRight: "25%",
+                            }}
+                          />
                         </Typography>
                         <input
                           name="text"
@@ -284,6 +414,7 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                           value={speechInput}
                           onChange={(e) => setSpeech(e.target.value)}
                         />
+
                         <Button onClick={setTranslatedText}>Translate</Button>
                         <br></br>
                         <input name="text" type="text" value={output} />
@@ -300,7 +431,10 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 </div>
                 <div className="contentBx">
                   <div>
-                    <h2>Emotion Detection</h2>
+                  <h2 onClick={handleModal} >
+                      Emotion Recognizer
+                    </h2>
+                    
                   </div>
                 </div>
               </div>

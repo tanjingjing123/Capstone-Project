@@ -4,6 +4,7 @@ from translate import Translator
 from flask_cors import CORS, cross_origin
 import SpeechToTextService as stts
 import TextToSpeechService as ttss
+import SpeechToEmotionService as stes
 
 app = Flask(__name__)
 CORS(app)
@@ -48,3 +49,10 @@ def translate_text_to_speech():
                         'Capstone-Project/Emotion Recognizer/backend/output.mp3',
                                as_attachment=True, mimetype="audio/mp3")
 
+# API to translate Speech to Emotion
+@app.route("/Speech_to_emotion", methods=['GET', 'POST'])
+def translate_speech_to_emotion():
+    file = request.files["inputFile"]
+    print(file)
+    output_text = stes.speech_to_emotion(file)
+    return output_text
