@@ -32,7 +32,7 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
     React.useState<boolean>(false);
     const [openModalForEmotion, toggleModalForEmotion] =
     React.useState<boolean>(false);
-  
+  const [detectedEmotion, setEmotionOutput] = React.useState<string>("");
   const [output, setOutput] = React.useState<string>("");
   const [speechText, setSpeechText] = React.useState<boolean>(false);
   const [fileChosen, setFileChosen] = React.useState<any>();
@@ -66,6 +66,10 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
   const handleCloseForEmotion = () => {
     toggleModalForEmotion(false);
   };
+  
+  const handleModalForEmotion = () => {
+    toggleModalForEmotion(!openModalForEmotion);
+  };
 
   const setTranslatedText = () => {
     axios
@@ -92,6 +96,48 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
     console.log(filesArr);
     setTextFileChosen(filesArr);
   };
+
+  const uploadImage = (e: any) => {
+    if (e.target.files && e.target.files[0]) {
+      getBase64(e.target.files[0]).then(
+        (data) => {
+          console.log(data);
+
+      let formData = new FormData();
+      formData.append("base64Image", data);
+      axios({
+        url: "http://localhost:8020/Image_To_Emotion",
+        method: "post",
+        responseType: "json",
+        headers: { Accept: "*/*", "Content-Type": "multipart/form-data" },
+        data: formData,
+      })
+      .then((response) => {
+            console.log(response.data);
+            setEmotionOutput(response.data.emotion)
+
+            var canvas:any = document.getElementById("myCanvas");
+            var ctx = canvas.getContext('2d');
+            var image:HTMLImageElement = new Image();
+            image.onload = function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            };
+            image.src = response.data.base64StringResend+"";
+      });
+        }
+      );
+    }
+  }
+
+  function getBase64(file:File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
 
   function handleClick() {
     let formData = new FormData();
@@ -431,10 +477,53 @@ export const Welcome: React.FC<IWelcomeProps> = () => {
                 </div>
                 <div className="contentBx">
                   <div>
-                  <h2 onClick={handleModal} >
-                      Emotion Recognizer
-                    </h2>
-                    
+                    <h2 onClick={handleModalForEmotion} className="hoverClass">Emotion Detection</h2>
+                    {/* Popup */}
+                    <Modal
+                      open={openModalForEmotion}
+                      onClose={handleCloseForEmotion}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description">
+                      <Box className="speechClass">
+                        <Typography
+                          id="modal-modal-title"
+                          variant="h6"
+                          component="h2"
+                        >
+                          <h3 style={{ textAlign: "center", color: "#4169e1", paddingTop: "10px" }} >Emotion Detection </h3>
+
+                          <hr style={{ width: "50%", marginLeft: "25%", marginRight: "25%" }} />
+                        </Typography>
+
+
+                        <div id="emotionContainer" className="inputClass">
+                          <label htmlFor="image-upload" className="custom-file-upload">
+                            <i ><CloudUploadIcon /></i> <span style={{ color: "white", textAlign: "center", fontWeight: "bold", paddingLeft: "5px" }}>Upload Image file</span>
+                          </label>
+                          <input
+                            id="image-upload"
+                            type="file"
+                            name="file"
+                            onChange={uploadImage}
+                          />
+                          <br />
+
+                          <div>
+                            {detectedEmotion && detectedEmotion?.length > 0 && (
+                              <p><h3>Detected emotion :<a href="/">{detectedEmotion}</a></h3>
+                              <input type="hidden" id="detected_emotion" value={detectedEmotion} />
+                              </p>
+                            )}
+                          </div>
+                          <br />
+
+                          <p>Screenshots :
+                            <canvas id="myCanvas" width="400" height="350"></canvas>
+                          </p>
+                        </div>
+
+                      </Box>
+                    </Modal>
                   </div>
                 </div>
               </div>
