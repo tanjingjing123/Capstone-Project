@@ -4,6 +4,8 @@ from translate import Translator
 from flask_cors import CORS, cross_origin
 import SpeechToTextService as stts
 import TextToSpeechService as ttss
+import music_recommendation_lib
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -24,6 +26,13 @@ def translate_ch():
         return en_to_ch_translator.translate(word)
     else:
         return ch_to_en_translator.translate(word)
+
+@app.route('/get_music_rec')
+def get_music_rec():
+    args = request.args
+    keyword = args['keyword']
+
+    return json.dumps(music_recommendation_lib.GetRecommendation(keyword))
 
 
 # API to translate Speech to Text
