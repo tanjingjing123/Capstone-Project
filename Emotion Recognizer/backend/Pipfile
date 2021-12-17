@@ -11,6 +11,13 @@ pydub = "*"
 speechrecognition = "*"
 google-cloud = "*"
 google-cloud-texttospeech = "*"
+librosa = "*"
+pandas = "*"
+matplotlib = "*"
+keras = "*"
+numpy = "*"
+keras-models = "*"
+tensorflow = "*"
 
 [dev-packages]
 
